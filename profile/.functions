@@ -1,0 +1,69 @@
+gitupdate() {
+    local current_branch="$(git rev-parse --abbrev-ref HEAD)"
+    local branch=${1:-"${current_branch}"}
+
+    git switch ${branch}
+
+    if git ls-remote --exit-code upstream > /dev/null 2>&1
+    then
+        echo Pulling from upstream
+        git pull upstream ${branch}
+
+        echo Pushing to origin
+        git push origin ${branch}
+    else
+        echo Pulling from origin
+        git pull origin ${branch}
+    fi
+
+    gitlog
+}
+
+gitlog() {
+    echo ""
+    git --no-pager log -n ${1:-5} --oneline
+    echo ""
+}
+
+gitpush() {
+    local current_branch="$(git rev-parse --abbrev-ref HEAD)"
+    local branch=${1:-"${current_branch}"}
+
+    git switch ${branch}
+
+    if git ls-remote --exit-code upstream > /dev/null 2>&1
+    then
+        echo Pushing to origin
+        git push origin ${branch}
+
+        echo Pushing to upstream
+        git push upstream ${branch}
+    else
+        echo Pushing to origin
+        git push origin ${branch}
+    fi
+
+    gitlog
+}
+
+gitpull() {
+    local current_branch="$(git rev-parse --abbrev-ref HEAD)"
+    local branch=${1:-"${current_branch}"}
+
+    git switch ${branch}
+
+    if git ls-remote --exit-code upstream > /dev/null 2>&1
+    then
+        echo Pulling from upstream
+        git pull upstream ${branch}
+    else
+        echo Pulling from origin
+        git pull origin ${branch}
+    fi
+
+    gitlog
+}
+
+tfdocs() {
+     docker run --rm --volume "$(pwd):/terraform-docs" -u $(id -u) quay.io/terraform-docs/terraform-docs:0.20.0 markdown /terraform-docs > README.md
+}

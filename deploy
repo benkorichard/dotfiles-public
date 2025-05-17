@@ -1,0 +1,26 @@
+#!/bin/bash
+
+main() {
+
+    sudo echo "Sudo works" || {
+        echo "Sudo not working, run this script with sudo"
+        exit 1
+    }
+
+    local me=${USER}
+    if ! sudo cat /etc/sudoers.d/${me} &> /dev/null
+    then
+        echo "${me} ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers.d/${me}
+    fi
+
+    source ./lib/_apps
+    source ./lib/_env
+
+    install_apps
+
+    config_env
+    
+    config_shell
+}
+
+main

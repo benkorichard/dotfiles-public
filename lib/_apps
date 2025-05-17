@@ -1,0 +1,128 @@
+check_app() {
+    local appname=${1}
+    local ret=0
+
+    ! command -v ${appname} >/dev/null && ret=1
+
+    return ${ret}
+}
+
+install_ansible() {
+    check_app ansible || \
+        sudo apt install -y ansible
+}
+
+install_awscli() {
+    if ! check_app aws
+    then
+        check_app unzip || sudo apt install -y unzip
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+        rm -rf aws*
+    fi
+}
+
+install_azure_cli() {
+    if ! check_app az
+    then
+        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+    fi
+}
+
+install_docker() {
+    if ! check_app docker
+    then
+        curl https://get.docker.com | sudo sh
+        sudo usermod -aG docker ${USER}
+    fi
+}
+
+install_gcloud() {
+    if ! check_app gcloud
+    then
+        sudo apt install -y apt-transport-https ca-certificates gnupg curl
+        curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+        echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+        sudo apt update && sudo apt install -y google-cloud-cli
+    fi
+}
+
+install_golang() {
+    check_app go || \
+        sudo apt install -y golang
+}
+
+install_htop() {
+    check_app htop || \
+        sudo apt install -y htop
+}
+
+install_kubectl() {
+    if ! check_app kubectl
+    then
+           sudo curl -o /usr/local/bin/kubectl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+           sudo chmod 0755 /usr/local/bin/kubectl
+    fi
+}
+
+install_make() {
+    check_app make || \
+        sudo apt install -y make
+}
+
+install_nmap() {
+    check_app nmap || \
+        sudo apt install -y nmap
+}
+
+install_pwgen() {
+    check_app pwgen || \
+        sudo apt install -y pwgen
+}
+
+install_terraform() {
+
+    if ! check_app terraform
+    then
+        wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+        sudo apt update && sudo apt install terraform
+    fi
+}
+
+install_vscode() {
+
+    if ! check_app code
+    then
+        sudo apt-get install wget gpg
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+        sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+        echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" |sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+        rm -f packages.microsoft.gpg
+        sudo apt install -y apt-transport-https
+        sudo apt update
+        sudo apt install -y code
+    fi
+}
+
+install_apps() {
+    echo "[Installing apps]"
+    sleep 1
+
+    sudo apt update
+
+    install_ansible
+    install_awscli
+    install_azure_cli
+    install_docker
+    install_golang
+    install_gcloud
+    install_kubectl
+    install_nmap
+    install_htop
+    install_make
+    install_pwgen
+    install_terraform
+    install_vscode
+}

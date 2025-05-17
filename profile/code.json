@@ -1,0 +1,5 @@
+{
+    "workbench.colorTheme": "Atom One Dark",
+    "editor.minimap.enabled": false,
+    "terminal.integrated.enableMultiLinePasteWarning": "never"
+}

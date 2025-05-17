@@ -1,0 +1,27 @@
+config_env() {
+    echo "[Configuring env]"
+    sleep 1
+
+    [[ -d ~/.ssh ]] || mkdir -pv ~/.ssh
+
+    cp ./config/ssh_config ~/.ssh/config
+
+    cp ./profile/.* ~/
+
+    sudo cp ./sbin/* /usr/local/sbin/
+}
+
+config_shell() {
+    local me=${USER}
+
+    if ! check_app zsh
+    then
+        sudo apt install -y zsh
+    fi
+
+    if ! check_app omz
+    then
+        sudo chsh ${me} -s $(which zsh)
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    fi
+}
