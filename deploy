@@ -2,6 +2,8 @@
 
 main() {
 
+    local flag="${1}"
+
     sudo echo "Sudo works" || {
         echo "Sudo not working, run this script with sudo"
         exit 1
@@ -16,11 +18,18 @@ main() {
     source ./lib/_apps
     source ./lib/_env
 
-    install_apps
-
-    config_env
+    if [[ ${flag} == '--no-install' ]]
+    then
+        config_env
     
-    config_shell
+        config_shell
+    else
+        install_apps
+
+        config_env
+    
+        config_shell
+    fi
 }
 
-main
+main "${@}"
