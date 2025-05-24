@@ -19,6 +19,21 @@ gitupdate() {
     gitlog
 }
 
+gitcommit() {
+    local commit_message="$1"
+    local commit_path="${2:-.}"
+
+    if [ -z "$commit_message" ]; then
+        echo "Usage: gitcommit \"<commit message>\" [path]"
+        echo "  <commit message>: Mandatory commit message."
+        echo "  [path]: Optional path to commit. Defaults to '.' (current directory)."
+        return 1
+    fi
+
+    git add -A "$commit_path"
+    git commit -m "$commit_message" "$commit_path"
+}
+
 gitlog() {
     echo ""
     git --no-pager log -n ${1:-5} --oneline
