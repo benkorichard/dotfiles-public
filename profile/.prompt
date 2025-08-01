@@ -79,3 +79,14 @@ PS1+="➜  \\[\e[0;1;96m\]\\W\\[\e[0m\]"
 PS1+="\$(prompt_git)"
 PS1+=" "
 export PS1;
+
+# Only bash aliases
+alias tf='terraform'
+alias tfi='terraform init'
+alias tfr='terraform refresh'
+alias tfd='terraform destroy'
+alias tfp='terraform plan'
+alias tff='terraform fmt'
+alias tfa='terraform apply'
+alias tfaa='terraform apply -auto-approve'
+alias tfo='terraform output'
